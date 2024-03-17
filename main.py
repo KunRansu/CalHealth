@@ -1,3 +1,4 @@
+#IMPORT LIBRARIES
 import tkinter as tk
 from tkinter import ttk
 import TKinterModernThemes as TKMT
@@ -5,23 +6,28 @@ import csv
 import datetime
 import os
 import pandas as pd
+import shutil
 
+#CREATE MAIN CLASS
 class App(TKMT.ThemedTKinterFrame):
+    title_font = ("Segoe UI Black", 36)
+    heading_font = ("Segoe UI Semibold", 24)
+    intro_font = ("Segoe UI", 16)
+    text_font = ("Segoe UI", 12)
+    color_bg = '#FEFFF2'
+
+    #INITIALIZE THE MAIN CLASS
     def __init__(self, theme, mode, usecommandlineargs=True, usethemeconfigfile=True):
         super().__init__("Final Project", theme, mode, usecommandlineargs, usethemeconfigfile)
         self.master.title("Program Beta")
         self.master.geometry("800x600")
-        self.master.config(bg='#FEFFF2')
+        self.master.config(bg=self.color_bg)
         self.master.resizable(False, False)
         self.startmenu()
         self.run()
         self.username = ""
 
-    
-    title_font = ("Segoe UI Black", 36)
-    heading_font = ("Segoe UI Semibold", 24)
-    text_font = ("Segoe UI", 12)
-    color_bg = '#FEFFF2'
+    #START MENU CONTAINS THE FIRST LAYER OF THE PROGRAM WHIHC IS THE WELCOME SCREEN WITH USERNAME INPUT     
     def startmenu(self):
         def check_entry():
             if self.username_entry.get() == "":
@@ -39,22 +45,24 @@ class App(TKMT.ThemedTKinterFrame):
         description = tk.Label(
             self.master,
             text="The CalHealth is an application designed to promote healthy living by \nproviding health-conscious people an easy way to calculate he amount of \ncalories eaten per meal and plan succeeding meals based on the results.",
-            font=self.text_font, bg= self.color_bg
+            font=self.intro_font, bg= self.color_bg
         )
-        description.place(relx=0.5, rely=0.6, anchor="center")
+        description.place(relx=0.5, rely=0.56, anchor="center")
 
         Username = tk.Label(self.master, text="Username:", font=self.text_font, bg= self.color_bg)
-        Username.place(relx=0.32, rely=0.78, anchor="center")
+        Username.place(relx=0.32, rely=0.72, anchor="center")
         self.username_entry = tk.Entry(font=self.text_font, width=30, borderwidth=2, relief="groove")
-        self.username_entry.place(relx=0.55, rely=.78, anchor="center")
+        self.username_entry.place(relx=0.55, rely=.72, anchor="center")
 
-        self.button = tk.Button(self.master, text="Start Program", command=username_get, state='disabled')
-        self.button.place(relx=0.5, rely=0.9, anchor="center")
+        self.button = tk.Button(self.master, text="Start Program", command=username_get, state='disabled', font=self.text_font, width= 15, height=1, borderwidth=2, relief="groove")
+        self.button.place(relx=0.5, rely=0.87, anchor="center")
         self.username_entry.bind("<KeyRelease>", lambda _: check_entry())
 
 
-
+    #MAIN MENU FUNCTION OCNTAINING ALL NAVIGATION AND DISPLAY FUNCTION FOR 2ND LAYER
     def mainmenu(self):
+
+        # Save the username to the user list
         def save_username(): 
             with open('Datafile/USERS/User_list.txt', 'r') as file:
                 existing_user_list = [line.strip() for line in file]
@@ -70,6 +78,7 @@ class App(TKMT.ThemedTKinterFrame):
         def exit_program():
             self.master.destroy()
         def delete_user():
+
             # Delete user folder
             user_folder = f"Datafile/USERS/{self.username}"
             if os.path.exists(user_folder):
@@ -82,49 +91,49 @@ class App(TKMT.ThemedTKinterFrame):
 
                 os.rmdir(user_folder)
             
-            # Remove username from user_list.txt
+            # Delete user from user list
             with open('Datafile/USERS/User_list.txt', 'r') as file:
                 lines = file.readlines()
             with open('Datafile/USERS/User_list.txt', 'w') as file:
                 for line in lines:
                     if line.strip() != self.username:
                         file.write(line)
-
             for widget in self.master.winfo_children():
                 widget.destroy()
             self.startmenu()
 
-
+        # Checks if user has already entered the application
         if self.username in existing_user_list:
             welcome = tk.Label(self.master, text=f"Welcome back {self.username}", font=self.heading_font, bg= self.color_bg)
             welcome.place(relx=0.06, rely=0.08)
-
+            # Function to display the user's BMR data from previous sessions
             def display_bmr_data():
                 username_bmr_file = f"Datafile/USERS/{self.username}/{self.username}_BMR.csv"
                 try:
                     bmr_data = pd.read_csv(username_bmr_file)
-                    latest_results = bmr_data.tail(10)
-
-                    # Create a ttk Treeview widget
-                    table = ttk.Treeview(self.master, columns=list(latest_results.columns), show="headings")
                     
-                    # Add columns to the table
+                    latest_results = bmr_data.tail(10)
+                    table = ttk.Treeview(self.master, columns=list(latest_results.columns), show="headings")
                     for column in latest_results.columns:
                         table.heading(column, text=column)
-                    
-                    # Add data to the table
                     for row in latest_results.itertuples(index=False):
-                        table.insert("", "end", values=row)
-                    
-                    table.place(relx=0.65, rely=0.4, anchor='center')  # Modify the position of the table
+                        table.insert("" , "end", values=row)
+                    table.place(relx=0.65, rely=0.5, anchor='center')
+                # If the file is not found, display a message to the user
                 except FileNotFoundError:
                     print(f"File {username_bmr_file} not found.")
+                    Display_val = tk.Label(self.master, text="No Existing\ndata found", font=self.heading_font, bg= self.color_bg)
+                    Display_val.place(relx=0.65, rely=0.4, anchor="center")
 
             display_bmr_data()
         else:
             welcome = tk.Label(self.master, text=f"Welcome to CalHealth {self.username}", font=self.heading_font, bg= self.color_bg)
             save_username()
             welcome.place(relx=0.06, rely=0.08)
+
+        # Main menu options
+        user_information = tk.Label(self.master, text="User Information", font=self.heading_font, bg= self.color_bg)
+        user_information.place(relx=0.65, rely=0.2, anchor="center")
 
         option_1 = tk.Button(self.master, text="Calculate Daily \nCaloric Intake", padx=24, pady=6, width=15, command=self.Calculate_Calories)
         option_1.place(relx=0.2, rely=0.3, anchor="center")
@@ -141,45 +150,46 @@ class App(TKMT.ThemedTKinterFrame):
         delete_button = tk.Button(self.master, text="Delete User", command=delete_user)
         delete_button.place(relx=0.75, rely=0.9, anchor="center")
 
+    #FUNCTION TO CALCULATE CALORIES
     def Calculate_Calories(self):
+        # Clear the window of any widgets
         for widget in self.master.winfo_children():
             widget.destroy()
         print("Calculate Calories launched!")
-
+        # Function to check if the user has entered valid data after pressing the calculate button
         def val_check():
             age = self.age_entry.get()
             gender = self.gender_var.get()
             height = self.height_entry.get()
             weight = self.weight_entry.get()
 
+            # Check if the user has entered valid data
             if not age.isdigit():
-                self.invalid_label.config(text="Invalid value", fg="red")
                 self.age_entry.config(bg="red")
             else:
                 self.age_entry.config(bg="white")
 
             if not height.isdigit():
-                self.invalid_label.config(text="Invalid value", fg="red")
                 self.height_entry.config(bg="red")
             else:
 
                 self.height_entry.config(bg="white")
 
             if not weight.isdigit():
-                self.invalid_label.config(text="Invalid value", fg="red")
                 self.weight_entry.config(bg="red")
             else:
                 self.weight_entry.config(bg="white")
                 
             if not gender:
-                self.invalid_label.config(text="Please indicate gender", fg="red")
+                self.invalid_label.config(text="Please indicate gender", font=self.text_font, bg=self.color_bg, fg="red")
             else:
                 self.invalid_label.config(text="")
 
-            if age.isdigit() and height.isdigit() and weight.isdigit() and gender:
+            # If all the data is valid, calculate the BMR
+            if age.isdigit() or height.isdigit() and weight.isdigit() and gender:
                 calculate_bmr()
 
-
+        # Function to calculate the Basal Metabolic Rate (BMR) and display the results
         def calculate_bmr():
             age = int(self.age_entry.get())
             weight = int(self.weight_entry.get())
@@ -190,56 +200,61 @@ class App(TKMT.ThemedTKinterFrame):
                 bmr = (447.6 + 9.25 * weight) + (3.10 * height) - (4.33 * age)
                 self.bmr_value = tk.Label(self.master, text=f"{round(bmr)}", font=self.text_font, bg=self.color_bg)
                 self.bmr_value.place(relx=0.775, rely=0.2, anchor="w")
-            if bmr:
-                proceed_button.config(state="normal")
-                bmr_label = tk.Label(self.master, text="BMR:", font=self.text_font, bg=self.color_bg)
-                bmr_label.place(relx=0.775, rely=0.2, anchor="e")
-                maintain_weight_label = tk.Label(self.master, text="Maintain Weight:", font=self.text_font, bg=self.color_bg)
-                maintain_weight_label.place(relx=0.775, rely=0.3, anchor="e")
-                maintain_weight_calories = round(bmr)
-                maintain_weight_value = tk.Label(self.master, text=f"{maintain_weight_calories} calories/day", font=self.text_font, bg=self.color_bg)
-                maintain_weight_value.place(relx=0.775, rely=0.3, anchor="w")
+            try:
+                if bmr:
+                    proceed_button.config(state="normal")
+                    bmr_label = tk.Label(self.master, text="BMR:", font=self.text_font, bg=self.color_bg)
+                    bmr_label.place(relx=0.775, rely=0.2, anchor="e")
+                    maintain_weight_label = tk.Label(self.master, text="Maintain Weight:", font=self.text_font, bg=self.color_bg)
+                    maintain_weight_label.place(relx=0.775, rely=0.3, anchor="e")
+                    maintain_weight_calories = round(bmr)
+                    maintain_weight_value = tk.Label(self.master, text=f"{maintain_weight_calories} calories/day", font=self.text_font, bg=self.color_bg)
+                    maintain_weight_value.place(relx=0.775, rely=0.3, anchor="w")
 
-                mild_weight_loss_label = tk.Label(self.master, text="Mild Weight Loss:", font=self.text_font, bg=self.color_bg)
-                mild_weight_loss_label.place(relx=0.775, rely=0.4, anchor="e")
-                mild_weight_loss_calories = round(bmr * 0.91)
-                mild_weight_loss_value = tk.Label(self.master, text=f"{mild_weight_loss_calories} calories/day", font=self.text_font, bg=self.color_bg)
-                mild_weight_loss_value.place(relx=0.775, rely=0.4, anchor="w")
+                    mild_weight_loss_label = tk.Label(self.master, text="Mild Weight Loss:", font=self.text_font, bg=self.color_bg)
+                    mild_weight_loss_label.place(relx=0.775, rely=0.4, anchor="e")
+                    mild_weight_loss_calories = round(bmr * 0.91)
+                    mild_weight_loss_value = tk.Label(self.master, text=f"{mild_weight_loss_calories} calories/day", font=self.text_font, bg=self.color_bg)
+                    mild_weight_loss_value.place(relx=0.775, rely=0.4, anchor="w")
 
-                weight_loss_label = tk.Label(self.master, text="Weight Loss:", font=self.text_font, bg=self.color_bg)
-                weight_loss_label.place(relx=0.775, rely=0.5, anchor="e")
-                weight_loss_calories = round(bmr * 0.82)
-                weight_loss_value = tk.Label(self.master, text=f"{weight_loss_calories} calories/day", font=self.text_font, bg=self.color_bg)
-                weight_loss_value.place(relx=0.775, rely=0.5, anchor="w")
+                    weight_loss_label = tk.Label(self.master, text="Weight Loss:", font=self.text_font, bg=self.color_bg)
+                    weight_loss_label.place(relx=0.775, rely=0.5, anchor="e")
+                    weight_loss_calories = round(bmr * 0.82)
+                    weight_loss_value = tk.Label(self.master, text=f"{weight_loss_calories} calories/day", font=self.text_font, bg=self.color_bg)
+                    weight_loss_value.place(relx=0.775, rely=0.5, anchor="w")
 
-                extreme_weight_loss_label = tk.Label(self.master, text="Extreme Weight Loss:", font=self.text_font, bg=self.color_bg)
-                extreme_weight_loss_label.place(relx=0.775, rely=0.6, anchor="e")
-                extreme_weight_loss_calories = round(bmr * 0.64)
-                extreme_weight_loss_value = tk.Label(self.master, text=f"{extreme_weight_loss_calories} calories/day", font=self.text_font, bg=self.color_bg)
-                extreme_weight_loss_value.place(relx=0.775, rely=0.6, anchor="w")
+                    extreme_weight_loss_label = tk.Label(self.master, text="Extreme Weight Loss:", font=self.text_font, bg=self.color_bg)
+                    extreme_weight_loss_label.place(relx=0.775, rely=0.6, anchor="e")
+                    extreme_weight_loss_calories = round(bmr * 0.64)
+                    extreme_weight_loss_value = tk.Label(self.master, text=f"{extreme_weight_loss_calories} calories/day", font=self.text_font, bg=self.color_bg)
+                    extreme_weight_loss_value.place(relx=0.775, rely=0.6, anchor="w")
 
-                username = self.username
-                folder_path = f"Datafile/USERS/{username}"
-                os.makedirs(folder_path, exist_ok=True)
+                    # Save the BMR data to a CSV file
+                    username = self.username
+                    folder_path = f"Datafile/USERS/{username}"
+                    os.makedirs(folder_path, exist_ok=True)
 
-                filename = f"{folder_path}/{username}_BMR.csv"
-                with open(filename, 'a', newline='') as file:
-                    writer = csv.writer(file)
-                    if file.tell() == 0:
-                        writer.writerow(["Name", "Data"])
-                    writer.writerow(["Date", datetime.date.today()])
-                    writer.writerow(["User", username])
-                    writer.writerow(["Age", age])
-                    writer.writerow(["Weight", weight])
-                    writer.writerow(["Height", height])
-                    writer.writerow(["Gender", self.gender_var.get()])
-                    writer.writerow(["BMR", round(bmr)])
-                    writer.writerow(["Maintain Weight", maintain_weight_calories])
-                    writer.writerow(["Mild Weight Loss", mild_weight_loss_calories])
-                    writer.writerow(["Weight Loss", weight_loss_calories])
-                    writer.writerow(["Extreme Weight Loss", extreme_weight_loss_calories])
-                    writer.writerow([])  # Add an empty row after the last data
-
+                    filename = f"{folder_path}/{username}_BMR.csv"
+                    with open(filename, 'a', newline='') as file:
+                        writer = csv.writer(file)
+                        if file.tell() == 0:
+                            writer.writerow(["Name", "Data"])
+                        writer.writerow(["Date", datetime.date.today()])
+                        writer.writerow(["User", username])
+                        writer.writerow(["Age", age])
+                        writer.writerow(["Weight", weight])
+                        writer.writerow(["Height", height])
+                        writer.writerow(["Gender", self.gender_var.get()])
+                        writer.writerow(["BMR", round(bmr)])
+                        writer.writerow(["Maintain Weight", maintain_weight_calories])
+                        writer.writerow(["Mild Weight Loss", mild_weight_loss_calories])
+                        writer.writerow(["Weight Loss", weight_loss_calories])
+                        writer.writerow(["Extreme Weight Loss", extreme_weight_loss_calories])
+                        writer.writerow([])  # Add an empty row after the last data
+            except NameError:
+                pass
+        
+        # Creates entry fields for the user to enter
         welcome = tk.Label(self.master, text=f"Calorie Calculator", font=self.text_font, bg=self.color_bg)
         welcome.place(relx=0.5, rely=0.08, anchor="center")
         
@@ -275,12 +290,12 @@ class App(TKMT.ThemedTKinterFrame):
 
         
         self.invalid_label = tk.Label(self.master, text="", font=self.text_font, bg=self.color_bg)
-        self.invalid_label.place(relx=0.3, rely=0.7, anchor="center")
+        self.invalid_label.place(relx=0.3, rely=0.8, anchor="center")
 
 
 
 
-        
+        # Button to proceed to the next step or return to main menu
         proceed_button = tk.Button(self.master, text="Proceed to Meal Plan", command=self.Plan_Meals, state="disabled")
         proceed_button.place(relx=0.7, rely=0.9, anchor="center")
         
@@ -288,12 +303,14 @@ class App(TKMT.ThemedTKinterFrame):
         return_button.place(relx=0.9, rely=0.9, anchor="center")
 
  
-
+    #FUNCTION TO PLAN MEALS
     def Plan_Meals(self):
         self.total_calories = 0
         for widget in self.master.winfo_children():
             widget.destroy()
         print("Plan Meals launched!")
+
+        # Function to import the dictionary of meals and their calorie counts from a txt file
         def import_dictionary(filename):
             dictionary = {}
             with open(filename, 'r') as file:
@@ -304,24 +321,19 @@ class App(TKMT.ThemedTKinterFrame):
 
         imported_dict = import_dictionary('Datafile/meals.txt')
 
-
+        # Create a listbox to display the meals
         listbox = tk.Listbox(self.master, width=36, height=10, font=self.text_font, bg= "white", borderwidth=2, relief="groove")
         listbox.place(relx=0.25, rely=0.35, anchor="center")
 
         for key in imported_dict.keys():
             listbox.insert(tk.END, f"{key}")
 
-
+        # Create a label to display the calorie count of the selected meal
         value_label = tk.Label(self.master, text="Calories per serving: ", font=self.text_font, bg=self.color_bg)
-        value_label.place(relx=0.05, rely=0.78, anchor="w")
+        value_label.place(relx=0.05, rely=0.57, anchor="w")
 
-        def display_value(event):
-            selected_key = listbox.get(listbox.curselection())
-            selected_value = imported_dict[selected_key]
-            value_label.config(text=f"Calories Per serving: {selected_value} Calories")
 
-        listbox.bind('<<ListboxSelect>>', display_value)
-        
+        # Function to add a meal to the dictionary and the listbox
         def add_meal():
             meal_name = meal_entry.get()
             calorie_count = calorie_entry.get()
@@ -337,7 +349,8 @@ class App(TKMT.ThemedTKinterFrame):
             meal_entry.delete(0, tk.END)
             calorie_entry.delete(0, tk.END)
             listbox.insert(tk.END, f"{meal_name}")
-        
+
+        # Function to add a meal to the mealbox and calculate the total calories
         def add_mealbox():
             meal_name = meal_pick.get()
             if meal_name in imported_dict:
@@ -347,7 +360,7 @@ class App(TKMT.ThemedTKinterFrame):
                 total_calories_label.config(text=f"Total Calories: {self.total_calories}")
 
 
-
+        # Function to delete a meal from the mealbox and calculate the total calories
         def delete_from_mealbox():
             selected_index = mealbox.curselection()
             if selected_index:
@@ -358,6 +371,7 @@ class App(TKMT.ThemedTKinterFrame):
                 self.total_calories -= int(calorie_count)
                 total_calories_label.config(text=f"Total Calories: {self.total_calories}")
         
+        # Function to save the meal history to a CSV file
         def save_meal_history():
             # Create the directory if it doesn't exist
             directory = f"Datafile/USERS/{self.username}"
@@ -384,9 +398,24 @@ class App(TKMT.ThemedTKinterFrame):
 
             # Enable the proceed button
             proceed_button.config(state="normal")
+        # Function to remove a meal from the dictionary and the listbox
+        def remove_meal():
+            selected_index = listbox.curselection()
+            if selected_index:
+                selected_item = listbox.get(selected_index)
+                del imported_dict[selected_item]
+                listbox.delete(selected_index)
+                with open('Datafile/meals.txt', 'w') as file:
+                    for key, value in imported_dict.items():
+                        file.write(f'{key}: {value}\n')
 
+        # Button to remove a meal
+        remove_button = tk.Button(self.master, text="Remove Meal", command=remove_meal)
+        remove_button.place(relx=0.5, rely=0.9, anchor="center")
+        
+        # Create the labels, entry fields, and buttons for the custom meal
         custom_meal_label = tk.Label(self.master, text="Custom Meal:", font=self.text_font, bg= self.color_bg)
-        custom_meal_label.place(relx=0.25, rely=0.57, anchor="center")
+        custom_meal_label.place(relx=0.25, rely=0.78, anchor="center")
 
         meal_label = tk.Label(self.master, text="Meal Name:", font=self.text_font, bg= self.color_bg)
         meal_label.place(relx=0.05, rely=0.62, anchor="w")
@@ -422,21 +451,20 @@ class App(TKMT.ThemedTKinterFrame):
 
         meal_pick.bind("<KeyRelease>", filter_listbox)
 
-        def select_from_listbox(_):
+        def select_item(_):
             try:
                 selected_item = listbox.get(listbox.curselection())
                 meal_pick.delete(0, tk.END)
                 meal_pick.insert(tk.END, selected_item)
             except Exception:
                 pass
+        listbox.bind("<<ListboxSelect>>", select_item)
 
-        
-
-        listbox.bind("<<ListboxSelect>>", select_from_listbox)
-
+        # Create the mealbox to display the selected meals
         mealbox = tk.Listbox(self.master, width=36, height=10, font=self.text_font, bg="white", borderwidth=2, relief="groove")
         mealbox.place(relx=0.75, rely=0.35, anchor="center")
 
+        # Create the labels and buttons for the mealbox
         total_calories_label = tk.Label(self.master, text=f"Total Calories: {self.total_calories}", font=self.text_font, bg=self.color_bg)
         total_calories_label.place(relx=0.75, rely=0.78, anchor="center")
 
@@ -447,7 +475,7 @@ class App(TKMT.ThemedTKinterFrame):
         save_button.place(relx=0.85, rely=0.12, anchor="center")
 
 
-
+        # Button to proceed to the next step or return to main menu
         proceed_button = tk.Button(self.master, text="Proceed to results", command=self.Caloric_History)
         proceed_button.place(relx=0.7, rely=0.9, anchor="center")
         
@@ -458,6 +486,15 @@ class App(TKMT.ThemedTKinterFrame):
         for widget in self.master.winfo_children():
             widget.destroy()
         print("Caloric History launched!")
+        # Function to display the table with dropdown box
+        def display_table():
+            # Clear the window of any widgets
+            for widget in self.master.winfo_children():
+                widget.destroy()
 
+            
 if __name__ == "__main__":
     App("sun-valley", "light")
+
+
+

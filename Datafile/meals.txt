@@ -1,12 +1,9 @@
-Omelette: 350
 Greek Yogurt with Berries: 150
 Avocado Toast: 300
 Scrambled Eggs: 200
 Whole Wheat Pancakes: 250
 Smoothie Bowl: 200
 Steel-Cut Oatmeal: 150
-Chia Seed Pudding: 120
-Fruit Salad: 100
 Smoked Salmon Bagel: 350
 Veggie Omelette: 300
 Peanut Butter Toast: 250
@@ -23,7 +20,7 @@ Frittata: 300
 Bagel with Cream Cheese: 350
 Fruit Smoothie: 200
 English Muffin with Jam: 250
-Hash Browns: 200
+Hash Browns: 150
 Bacon and Egg Wrap: 400
 Pancakes with Maple Syrup: 400
 Almond Butter Toast: 300
@@ -142,7 +139,7 @@ Puto Bibingka: 350
 Puto Bao: 300
 Puto Maya with Sikwate: 400
 Puto Binan: 250
-Puto Calasiao: 350 
+Puto Calasiao: 350
 Puto Puti: 300
 Puto Suman: 400
 Puto Sapin-Sapin: 250
@@ -250,9 +247,9 @@ Ice cream (vanilla): 200
 Cheesecake: 350
 Frappe (mocha): 350
 Chicken Teriyaki Bowl: 400
-Beef Stir-Fry: 450
+Beef Stir-Fry: 400
 Shrimp Scampi: 350
-Vegetable Curry: 300
+Vegetable Curry: 350
 Pork Carnitas Tacos: 400
 Salmon with Lemon Butter Sauce: 450
 Mushroom Risotto: 350
@@ -273,7 +270,6 @@ Shrimp Fried Rice: 450
 Eggplant Parmesan: 350
 Chicken Fajitas: 400
 Beef Tacos: 450
-Vegetable Curry: 350
 Honey Garlic Salmon: 400
 Mushroom and Spinach Pasta: 450
 Chicken and Broccoli Stir-Fry: 350
@@ -301,15 +297,6 @@ Mushroom and Spinach Stuffed Peppers: 350
 Chicken and Mushroom Risotto: 400
 Beef and Broccoli Stir-Fry: 450
 Vegetable Stir-Fry Noodles: 350
-Beef Stir-Fry: 400
-Beef Burrito: 450
-Beef Tacos: 450
-Beef and Broccoli: 400
-Beef and Mushroom Stroganoff: 400
-Beef and Vegetable Skewers: 400
-Beef and Black Bean Chili: 350
-Beef and Potato Stew: 350
-Beef and Broccoli Stir-Fry: 450
 Beef and Mushroom Risotto: 400
 Ribeye Steak: 600
 Filet Mignon: 500
@@ -366,7 +353,6 @@ McChicken Deluxe: 530
 Double Cheeseburger: 440
 Triple Cheeseburger: 520
 Big N' Tasty: 460
-Egg McMuffin: 300
 Sausage McMuffin: 370
 Sausage McMuffin with Egg: 450
 Bacon, Egg & Cheese Biscuit: 460
@@ -377,7 +363,6 @@ Bacon, Egg & Cheese McGriddles: 460
 Sausage, Egg & Cheese McGriddles: 550
 Bacon, Egg & Cheese Bagel: 550
 Steak, Egg & Cheese Bagel: 670
-Hash Browns: 150
 Fruit 'N Yogurt Parfait: 150
 Fruit & Maple Oatmeal: 320
 Big Breakfast: 750
