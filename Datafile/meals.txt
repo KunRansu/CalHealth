@@ -1,5 +1,4 @@
 Greek Yogurt with Berries: 150
-Avocado Toast: 300
 Scrambled Eggs: 200
 Whole Wheat Pancakes: 250
 Smoothie Bowl: 200
@@ -367,3 +366,6 @@ Fruit 'N Yogurt Parfait: 150
 Fruit & Maple Oatmeal: 320
 Big Breakfast: 750
 Big Breakfast with Hotcakes: 1350
+French Fries: 250
+Milk Tea: 350
+Milk Tea (Hokkaido): 400
