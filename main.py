@@ -473,7 +473,7 @@ class App(TKMT.ThemedTKinterFrame):
                 selected_item = listbox.get(listbox.curselection())
                 meal_pick.delete(0, tk.END)
                 meal_pick.insert(tk.END, selected_item)
-                update_calorie_count()
+                update_calorie_countz()
             except:
                 pass
         listbox.bind("<<ListboxSelect>>", select_item)
@@ -530,6 +530,8 @@ class App(TKMT.ThemedTKinterFrame):
             meals_table = ttk.Treeview(self.master, height = 4)
             meals_table["columns"] = tuple(meals_data.columns)
             meals_table["show"] = "headings"
+            for column in meals_table["columns"]:
+                meals_table.heading(column, text=column)
             for index, row in meals_data.iterrows():
                 meals_table.insert("", "end", values=tuple(row))
             meals_table.place(relx=0.5, rely=0.6, anchor="center")
